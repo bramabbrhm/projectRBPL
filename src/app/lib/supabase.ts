@@ -1,0 +1,20 @@
+import { createClient } from '@supabase/supabase-js';
+import type { Database } from './database.types';
+import { projectId, publicAnonKey } from '../../../utils/supabase/info';
+
+const supabaseUrl = (import.meta.env.VITE_SUPABASE_URL as string) || `https://${projectId}.supabase.co`;
+const supabaseAnonKey = (import.meta.env.VITE_SUPABASE_ANON_KEY as string) || publicAnonKey;
+
+if (!supabaseUrl || !supabaseAnonKey) {
+  throw new Error('Missing VITE_SUPABASE_URL or VITE_SUPABASE_ANON_KEY environment variables.');
+}
+
+export const supabase = createClient<Database>(supabaseUrl, supabaseAnonKey, {
+  auth: {
+    autoRefreshToken: true,
+    persistSession: true,
+    detectSessionInUrl: true,
+  },
+});
+
+export type { Database };
